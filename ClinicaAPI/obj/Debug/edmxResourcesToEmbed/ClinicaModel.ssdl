@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ClinicaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="appointment">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="patient_id" Type="int" Nullable="false" />
+    <Property Name="a_date" Type="datetime" Nullable="false" />
+    <Property Name="a_area" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="appointment_area">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+  </EntityType>
+  <EntityType Name="patient">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="200" />
+    <Property Name="lastname" Type="nvarchar" MaxLength="200" />
+    <Property Name="phone" Type="int" />
+    <Property Name="sex" Type="char" MaxLength="1" />
+    <Property Name="password" Type="nvarchar" MaxLength="100" />
+    <Property Name="admin" Type="bit" />
+  </EntityType>
+  <Association Name="fk_a_area">
+    <End Role="appointment_area" Type="Self.appointment_area" Multiplicity="1" />
+    <End Role="appointment" Type="Self.appointment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="appointment_area">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="appointment">
+        <PropertyRef Name="a_area" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_patient">
+    <End Role="patient" Type="Self.patient" Multiplicity="1" />
+    <End Role="appointment" Type="Self.appointment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="patient">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="appointment">
+        <PropertyRef Name="patient_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ClinicaModelStoreContainer">
+    <EntitySet Name="appointment" EntityType="Self.appointment" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="appointment_area" EntityType="Self.appointment_area" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="patient" EntityType="Self.patient" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="fk_a_area" Association="Self.fk_a_area">
+      <End Role="appointment_area" EntitySet="appointment_area" />
+      <End Role="appointment" EntitySet="appointment" />
+    </AssociationSet>
+    <AssociationSet Name="fk_patient" Association="Self.fk_patient">
+      <End Role="patient" EntitySet="patient" />
+      <End Role="appointment" EntitySet="appointment" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

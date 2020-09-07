@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ClinicaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="appointment">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="patient_id" Type="Int32" Nullable="false" />
+    <Property Name="a_date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="a_area" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="appointment_area" Relationship="Self.fk_a_area" FromRole="appointment" ToRole="appointment_area" />
+    <NavigationProperty Name="patient" Relationship="Self.fk_patient" FromRole="appointment" ToRole="patient" />
+  </EntityType>
+  <EntityType Name="appointment_area">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="appointments" Relationship="Self.fk_a_area" FromRole="appointment_area" ToRole="appointment" />
+  </EntityType>
+  <EntityType Name="patient">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="lastname" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="phone" Type="Int32" />
+    <Property Name="sex" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="admin" Type="Boolean" />
+    <NavigationProperty Name="appointments" Relationship="Self.fk_patient" FromRole="patient" ToRole="appointment" />
+  </EntityType>
+  <Association Name="fk_a_area">
+    <End Role="appointment_area" Type="Self.appointment_area" Multiplicity="1" />
+    <End Role="appointment" Type="Self.appointment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="appointment_area">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="appointment">
+        <PropertyRef Name="a_area" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_patient">
+    <End Role="patient" Type="Self.patient" Multiplicity="1" />
+    <End Role="appointment" Type="Self.appointment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="patient">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="appointment">
+        <PropertyRef Name="patient_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ClinicaEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="appointments" EntityType="Self.appointment" />
+    <EntitySet Name="appointment_area" EntityType="Self.appointment_area" />
+    <EntitySet Name="patients" EntityType="Self.patient" />
+    <AssociationSet Name="fk_a_area" Association="Self.fk_a_area">
+      <End Role="appointment_area" EntitySet="appointment_area" />
+      <End Role="appointment" EntitySet="appointments" />
+    </AssociationSet>
+    <AssociationSet Name="fk_patient" Association="Self.fk_patient">
+      <End Role="patient" EntitySet="patients" />
+      <End Role="appointment" EntitySet="appointments" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
